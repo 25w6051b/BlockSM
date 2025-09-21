@@ -1,0 +1,297 @@
+/* 文字の形・色などの装飾全般 */
+
+body,html {
+  width: 100%;
+  height: 100%;
+  margin: 0;      /* 左右を自動で余白に */
+  /* padding: 0; */
+}
+
+/* htmlのモードとの依存関係を決める */
+[mode='blockly'] .mode-blockly {
+  display: block; /* モードごとに対応する要素を表示する */
+}
+
+.main-container {
+  width: 100%;
+  max-width: 2000px;  /* 最大幅を設定 1148 */
+  /* min-height: 80vh; */
+  /* height: 80vh; */
+  position: relative;
+  margin: 0 left; /* 中央揃えにする */
+  /* overflow: hidden; 内容がはみ出した場合それを隠す */
+}
+
+header {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  height: 7.5vh;
+}
+
+/* モードごとでディスプレイが混在しないように設定 */
+/* .mode-edit,
+.mode-maker, */
+.mode-blockly {
+  display: none;
+}
+
+/* ブロックを操作する画面の設定 */
+.mode-blockly {
+  color: white;
+}
+
+.statement {
+  margin: 1em 0;
+  font-size: 1.5em;
+}
+
+
+
+
+/* 以下は特定の領域(組み合わせを含む)を設定する */
+
+/* ボタンと現在の状態をまとめて表示するコンテナ*/
+.button-currentLog-container {
+  display: flex;             
+  justify-content: left; 
+  margin-top: 30px; 
+  margin-bottom: 20px;
+}
+
+.all-container {
+  display: flex;
+  gap: 20px; /* コンテナ同士の間隔（必要に応じて調整） */
+  margin-left: 20px;
+  align-items: flex-start; /* 高さを揃えないように */
+}
+
+
+/* ブロックの実行結果を表示する領域とワークスペースをまとめて表示するコンテナ  */
+.workspace-container {
+  display: flex;
+  width: 100%;  /* 親コンテナは100% */
+  height: 100%; 
+  overflow: hidden; /* コンテナからはみ出る部分を隠す */
+  margin-bottom: 10px;
+}
+
+
+/* データの保存ボタンを格納するコンテナ */
+/* .data-container {
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-start; 
+  gap: 10px; 
+} */
+
+.display-right{
+  display: flex;
+  justify-content: space-between; /* 横方向の右揃え */
+  align-items: flex-start; /* 縦方向の下揃え */
+}
+
+.display-none {
+  display: none;
+}
+
+
+.image-container {
+  border: 2px solid black;  /* コンテナに青い枠線を付ける */
+  width: 1100px;  /* 必要に応じて幅や高さを設定 */
+  height: 84vh;
+  margin-top: 100px;
+  box-sizing: border-box;  /* 枠線を含めてサイズ調整 */
+  overflow: hidden;  /* はみ出し防止（必要に応じて） */
+}
+
+.behaviorImage-container{
+  width: 900px;
+  height: 900px;
+  margin-top: 0px;
+}
+
+
+.image-container img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.behavior-container{
+  margin-top: 170px;
+}
+
+
+/* 以下は実行結果を表示する領域を設定する */
+
+/* ブロックの実行結果を出力時，エラーが発生している場合(エラー内容は独自ルールに基づく)に文字を色を変える */
+.log-entry.error {
+  font-family: 'Courier New', monospace; /* エラーはモノスペースフォント */
+  color: red; /* 文字色を赤に */
+}
+
+.behaviorLog-area.activity{
+  font-size: 30px;
+  color: red; /* 文字色を赤に */
+}
+
+/* ログを出力する領域 */
+.log-area {
+  width: 345px; 
+  box-sizing: border-box; /* パディングやボーダーを高さに含める */
+  background-color: #f0f0f0;
+  padding: 10px;
+  overflow-y: auto;      /* 垂直方向にスクロールバーを表示 */
+  white-space: pre-wrap; /* 改行を保持する */
+  word-wrap: break-word; /* 単語の途中で改行を許可 */
+  font-family: Arial, sans-serif; /* フォントを設定 */
+  font-size: 16px; /* フォントサイズ */
+  font-weight: bold; /* 文字を太字に */
+  line-height: 1.6; /* 行間を広げる */
+}
+
+
+.behaviorLog-area{
+  width:900px;
+  height:120px;
+  overflow-y: visible;
+  margin-bottom: 30px;
+  font-size: 20px;
+}
+
+
+/* ブロックの実行結果を表示する領域*/
+.block-log-area {
+  height: 80vh;         /* 高さを指定してスクロール領域を設定 */
+}
+
+
+/* 現在の状態を出力する領域 */
+.current-log-area {
+  height: 8vh;         /* 高さを指定してスクロール領域を設定 */
+  margin-right: 15px;
+}
+
+.data-area{
+  flex-direction: row;
+  align-items:center;
+  position: absolute;
+  background-color:#4CAF50;
+  z-index: 10;
+}
+
+
+
+/* 以下はボタンの設定をする */
+
+/* 動作テスト，リセット，イベントボタンをまとめて表示するグループ */
+.button-group {
+  display: flex;             
+  overflow-x: auto;            /* 横スクロールを可能にする */
+  white-space: nowrap;       /*  ボタンが折り返されないようにする  */
+  width: 1000px;
+}
+
+/* ボタンの設定を行う(色以外を設定) */
+.button {
+  padding: 0.2em 0.5em;
+  height: 80px;
+  font-weight: bold;
+  font-size: 1.2em;
+  color: whitesmoke;
+  margin-top: 15px;
+  cursor: pointer;  /* カーソルを合わせると手に変わる */
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* 動作テスト，リセットボタンの色を設定 */
+.action-button {
+  background-color: #00BCD4;
+}
+
+/* イベントボタンの色を設定 */
+.event-button {
+  background-color: #FF0015;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.relative {
+  /* display: none; */
+  position: relative;
+}
+
+.top{
+  margin-top: 100px;
+}
+
+.add-button {
+  background-color: #768082;
+  height: 50px;
+  width: 60px;
+  margin: 5px;
+  border-radius: 5px; /* 角の丸みの半径を5pxにする */
+}
+
+/* 動作テスト，リセットボタンのホバー時に色を変える */
+.action-button:hover {
+  background-color: #006D7F; 
+}
+
+/* イベントボタンのホバー時に色を変える */
+.event-button:hover {
+  background-color: #B30000; 
+}
+
+.add-button:hover {
+  background-color: #50575d; 
+}
+
+/* 各種ボタンをクリック時にサイズを小さくする */
+.action-button:active,
+.event-button:active {
+  transform: scale(0.90);
+}
+
+
+
+/* 以下はドロップダウンメニューの設定を行う */
+
+.data-button {
+  background-color: #4CAF50;  /* 緑の背景 */
+  height: 60px;
+  width:230px;
+  padding: 10px 20px;  /* パディング */
+  border-radius: 5px; /* 角の丸みの半径を5pxにする */
+  font-size: 20px;
+  margin: 10px;
+  border: 2px solid black;  
+}
+
+
+.data-button option {
+  font-size: 1.2em;
+}
+
+.data-button:hover {
+  background-color: #388E3C; 
+}
+
+.data-button:focus {
+  outline: none;  /* フォーカス時のアウトラインを消す */
+}
+
+
+
+/* 以下はインプットタグの設定を行う */
+
+input[type="text"] {
+  /* background-color: #4CAF50; */
+  font-size: 1.4em;
+  padding: 10px 10px;
+  height: 30px;
+  margin: 0 10px;
+}

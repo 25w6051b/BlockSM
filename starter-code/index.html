@@ -1,0 +1,194 @@
+
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />  <!-- エンコーディングをUTF-8に設定 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- 最新のレンダリングエンジンを使用 IEはあまり使われてないから不要？-->  
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <!-- XLSX ライブラリを CDN から読み込む -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
+
+    <title>Let’s learn state machine diagrams with blocks</title> <!-- webブラウザのタイトルの設定 -->
+
+    <!-- スタイルシートの設定 -->
+    <!-- mdlは外部のcssファイル -->
+    <link
+      rel="stylesheet" 
+      href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css" /> 
+    <!-- 内部のcssファイル -->
+    <link 
+      rel="stylesheet"  
+      href="styles/index.css" />
+    <link 
+      rel="stylesheet" 
+      href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    </head>
+
+
+  <body>
+    <!-- ヘッダーの色を設定 -->
+    <header style="background-color: #4CAF50; display: flex; justify-content: space-between;">
+      <!-- 左寄せ：ログ取得ボタン -->
+      <div>
+        <button class="button data-button" id="logGet" title="Retrieving logs">Get Log</button>
+      </div>
+
+      <!-- 右寄せ：保存・削除など -->
+      <div style="display: flex; gap: 100px;">
+        <div class="relative">
+          <button class="button data-button" id="saveButton" title="Saving workspace block information">Save Data</button>
+          <div class="display-none data-area" id="inputSaveNameContainer">
+            <input type="text" id="saveNameInput" placeholder="Enter a save name" />
+            <button class="button add-button" id="addNameButton" title="Save workspace block information with a name">Add</button>
+          </div>
+        </div>
+
+        <div class="relative">
+          <button class="button data-button" id="deleteRestoreButton" title="Delete saved data">Delete Data</button>
+          <div class="display-none data-area" id="inputdeleteNameContainer">
+            <input type="text" id="deleteNameInput" placeholder="Enter the name of the data to delete." />
+            <button class="button add-button" id="deleteButton" title="Enter the name you want to delete, and the corresponding data will be removed.">Delete</button>
+          </div>
+        </div>
+
+        <div class="relative">
+          <select class="button data-button" id="restoreMenu" title="Append saved data to the current workspace">
+            <option disabled selected>Load Data</option>
+            <option value="1" id="previousDataKey">Reload the last data</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- mode-edit モードのときに表示されるメッセージ -->
+      <!-- タグpを用いると周囲にマージンが追加される -->
+      <!-- <p class="hint mode-edit statement">
+        実行ボタンを押すことで編集画面に飛べるよ. <br /> 編集が終わってたら終了を押してね．
+      </p> -->
+
+
+      <div class="all-container">
+        <!-- <div class="behavior-namecontainer">
+          <div class="log-area behaviorLog-area" id="behaiviorLog">ここに現在の「動き」が表示されます  </div>
+          <div class="image-container behaviorImage-container" id="behaiviorImage">
+            <img src="img/白画像.png">
+          </div>
+        </div> -->
+
+        <div>
+          <!-- 現在の状態と各種ボタンをまとめて表示するコンテナ -->
+          <div class="button-currentLog-container">
+            <!-- 現在の状態を出力する領域 -->
+            <div class="log-area current-log-area" id="current-state-area"></div>
+      
+            <div class="button-group">  
+              <!-- ボタンを押すとワークスペース内のブロックを実行できる -->
+              <button class="button action-button" id="test">Simulation</button>
+              <!-- "リセット" ボタン -->
+              <!-- ワークスペース以外の情報をリセットできるボタン -->
+              <button class="button action-button" id="reset">Reset</button>
+
+              <!-- イベントを起こすボタン  -->
+              <!-- イベントなしで実行するボタン -->
+              <button class="button event-button" id="nonEvent">completionEvent</button>
+            </div>
+          </div>
+
+
+          <!-- ブロックの実行結果を表示する領域とワークスペースをまとめて表示するコンテナ -->
+          <div class="workspace-container">
+            <!-- ブロックの実行結果を表示する領域 -->
+            <div class="log-area block-log-area" id="log-area"> The execution result will be displayed here </div>
+            <!-- ワークスペースを挿入する領域 -->
+            <div style="height: 80vh; width: 1000px" id="blocklyDiv"></div> <!--範囲だけ決めてmain.jsでワークスペースを挿入-->
+          </div>
+        </div>
+
+
+        <div>
+          <!-- <button class="button data-button" id="pbToPuml" title="ワークスペースのブロック群をモデル図に変換します">図に変換</button> -->
+          <div class="image-container" id="imageModel"></div>
+        </div>
+
+        
+      </div>
+    </main>
+
+    
+
+    <!-- データの保存を行うボタン -->
+    <!-- <div>
+      <div class = "saveButtonArea">
+        <button class="mode-blockly save-button" id="saveData">データの保存</button>
+        <button class="mode-blockly save-button" id="restoreData">データの復元</button>
+      </div>
+
+      <label for="xmlInput"> xmlファイルを選択 </label>
+      <input type="file" id="xmlInput" accept=".xml">
+    </div> -->
+
+    <script>
+      async function fetchData() {
+        const response = await fetch('http://localhost:8080/'); // 接続するためにawaitで待つ
+        return await response.json(); // 値を取得するまでawaitで待つ json形式にして，リストとして受け取る
+      }
+
+      function loadJsFiles(jsFile){
+        // awaitでこの関数を呼び出しているのでpromiseを用いる
+          return new Promise((resolve,reject) => {
+          let jsScript = document.createElement("script");
+          jsScript.src = jsFile;
+          document.body.appendChild(jsScript);
+          jsScript.onload = resolve; 
+          jsScript.onerror = reject;
+        })
+      }
+
+      let astahData;
+
+      async function defineJsFiles() {
+        astahData = await fetchData(); // returnで返される値にはまだ値は入っていない(厳密にはpromiseが返される)ためawaitで待つ必要がある
+
+        const jsFiles = [
+          "https://unpkg.com/blockly@11.2.2/blockly_compressed.js",
+          "https://unpkg.com/blockly@11.2.2/blocks_compressed.js",
+          "https://unpkg.com/blockly@11.2.2/javascript_compressed.js",
+          "https://unpkg.com/blockly@11.2.2/msg/ja.js",
+          "https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js",
+          "scripts/logs/logtext.js",
+          "scripts/blocks/variable_setting.js",
+          "scripts/button/button_setting.js",
+          "scripts/functions/dataSave.js",
+          "scripts/functions/changeModel.js",
+          "scripts/functions/motionView.js",
+          "scripts/blocks/block_state.js",
+          "scripts/blocks/block_trigger.js",
+          "scripts/blocks/block_guard.js",
+          "scripts/blocks/block_motionrules.js",
+          "scripts/blocks/block_behavior.js",
+          "scripts/blocks/block_effect.js",
+          "scripts/blocks/block_variable.js",
+          "scripts/blocks/block_transition2.js",
+          "scripts/blocks/block_switch.js",
+          "scripts/main.js",
+          "scripts/blocks/register_blocks.js",
+          "scripts/blocks/opacity_controller.js",
+          "scripts/functions/js_functions.js",
+        ]
+
+        // 非同期処理でjavaファイルから必要なデータが取得できたのでjsファイルを読み込む
+        // 先に読み込んでしまうとjavaファイルからデータ(astahのデータ)を受け取る前にjsファイルが実行されてしまうため
+        for (let src of jsFiles){
+          await loadJsFiles(src); // jsファイルの読み込みも非同期？であるためawaitしないと他の処理が先に実行されてしまう
+        }
+    };
+
+    window.onload = defineJsFiles;
+    
+    </script>
+  </body>
+</html>

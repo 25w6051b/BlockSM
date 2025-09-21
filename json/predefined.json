@@ -1,0 +1,6 @@
+{
+  "behavior" : [ "idle", "stopMotor", "startMotor", "spinBlades" ],
+  "event" : [ "pressPowerButton", "pressLockButton" ],
+  "guard" : [ "lock == off", "lock == on" ],
+  "effect" : [ "lock = off", "lock = on" ]
+}
