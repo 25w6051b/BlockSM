@@ -20,7 +20,8 @@ If another process is already using this port, please either change the port num
 This project is licensed under the GNU General Public License v3.0 (GPLv3).  
 See the [LICENSE](./LICENSE) file for details.
 
-##Publication
-[APSEC25] <https://www.computer.org/csdl/proceedings-article/apsec/2025/665300b009/2emQPreXFJe>
+## Publication
+[APSEC25](https://www.computer.org/csdl/proceedings-article/apsec/2025/665300b009/2emQPreXFJe)
 N. Takasu, S. Ogata, K. Okano and E. Makihara, "A Block-Based Educational Tool for Novice Understanding of State Machine Representation," in 2025 32nd Asia-Pacific Software Engineering Conference (APSEC), Macau, China, 2025, pp. 1009-1012, doi: 10.1109/APSEC66846.2025.00118. <https://youtu.be/ZzVBhjWq1zY>
+
 
